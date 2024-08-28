@@ -80,29 +80,81 @@ class FirstScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input manual'),
+        title: Text('Input Manual'),
       ),
-      body: Center(
-        child: Text(
-          'Tela de input Manual',
-          style: TextStyle(fontSize: 24),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // Logo no topo-centro
+            Center(
+              child: Image.asset(
+                '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/WhyFarmingLogo.png',
+                height: 100, // ajuste o tamanho conforme necessário
+              ),
+            ),
+            SizedBox(height: 30), // espaço entre o logo e os inputs
+
+            // Campos de input para N, P e K
+            TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'N',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'P',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'K',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
 class SecondScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input automatico'),
+        title: Text('Input Automático'),
       ),
       body: Center(
-        child: Text(
-          'Thela de input automático',
-          style: TextStyle(fontSize: 24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/WhyFarmingLogo.png',
+              height: 100, // ajuste o tamanho conforme necessário
+            ),
+            SizedBox(height: 40), // Espaçamento entre o texto e o botão
+
+            // Botão "Detectar sinal do ESP"
+            ElevatedButton(
+              onPressed: () {
+                // Adicione a lógica para detectar o sinal do ESP aqui
+              },
+              child: Text('Detectar sinal do ESP'),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
         ),
       ),
     );
