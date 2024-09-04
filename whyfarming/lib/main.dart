@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );
@@ -15,18 +19,20 @@ class MyApp extends StatelessWidget {
 }
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WhyFarming'),
+        title: const Text('WhyFarming'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RichText(
-              text: TextSpan(
+              text: const TextSpan(
                 children: [
                   TextSpan(
                     text: 'Why',
@@ -47,25 +53,25 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FirstScreen()),
+                  MaterialPageRoute(builder: (context) => const FirstScreen()),
                 );
               },
-              child: Text('Input Manual'),
+              child: const Text('Input Manual'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SecondScreen()),
+                  MaterialPageRoute(builder: (context) => const SecondScreen()),
                 );
               },
-              child: Text('Input automático'),
+              child: const Text('Input automático'),
             ),
           ],
 
@@ -75,51 +81,99 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class FirstScreen extends StatelessWidget {
+class FirstScreen extends StatefulWidget {
+  const FirstScreen({super.key});
+
+  @override
+  _FirstScreenState createState() => _FirstScreenState();
+}
+
+class _FirstScreenState extends State<FirstScreen> {
+  final _nController = TextEditingController();
+  final _pController = TextEditingController();
+  final _kController = TextEditingController();
+  String _result = '';
+
+  Future<void> _fetchData() async {
+    final n = _nController.text;
+    final p = _pController.text;
+    final k = _kController.text;
+
+    final url = Uri.parse('http://127.0.0.1:3000/plants?n=$n&p=$p&k=$k');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body) as List;
+      final plantData = data.map((item) => {
+        'nome': item['nome'],
+        'descricao': item['descricao'],
+        'url': item['url']
+      }).toList();
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PlantDetailsScreen(plantData: plantData),
+        ),
+      );
+    } else {
+      setState(() {
+        _result = 'Failed to fetch data';
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Manual'),
+        title: const Text('Input Manual'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // Logo no topo-centro
             Center(
               child: Image.asset(
-                '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/WhyFarmingLogo.png',
-                height: 100, // ajuste o tamanho conforme necessário
+                '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/lib/WhyFarmingLogo.png',
+                height: 100,
               ),
             ),
-            SizedBox(height: 30), // espaço entre o logo e os inputs
+            const SizedBox(height: 30),
 
-            // Campos de input para N, P e K
             TextField(
+              controller: _nController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'N',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
+              controller: _pController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'P',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
+              controller: _kController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'K',
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _fetchData,
+              child: const Text('Buscar Plantas'),
+            ),
+            const SizedBox(height: 20),
+            Text(_result),
           ],
         ),
       ),
@@ -127,11 +181,13 @@ class FirstScreen extends StatelessWidget {
   }
 }
 class SecondScreen extends StatelessWidget {
+  const SecondScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Input Automático'),
+        title: const Text('Input Automático'),
       ),
       body: Center(
         child: Column(
@@ -141,21 +197,48 @@ class SecondScreen extends StatelessWidget {
               '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/WhyFarmingLogo.png',
               height: 100, // ajuste o tamanho conforme necessário
             ),
-            SizedBox(height: 40), // Espaçamento entre o texto e o botão
+            const SizedBox(height: 40), // Espaçamento entre o texto e o botão
 
             // Botão "Detectar sinal do ESP"
             ElevatedButton(
               onPressed: () {
                 // Adicione a lógica para detectar o sinal do ESP aqui
               },
-              child: Text('Detectar sinal do ESP'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                textStyle: TextStyle(fontSize: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: const TextStyle(fontSize: 16),
               ),
+              child: const Text('Detectar sinal do ESP'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+class PlantDetailsScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> plantData;
+
+  const PlantDetailsScreen({Key? key, required this.plantData})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Detalhes das plantas),
+      ),
+      body: ListView.builder(
+        itemCount: plantData.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(plantData[index]['nome']),
+            subtitle: Text(plantData[index]['descricao']),
+            trailing: plantData[index]['url'] != null
+                ? Image.network(plantData[index]['url'])
+                : null,
+          );
+        },
       ),
     );
   }
