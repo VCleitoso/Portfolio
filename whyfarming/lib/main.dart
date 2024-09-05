@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -226,7 +228,7 @@ class PlantDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhes das plantas),
+        title: const Text('Detalhes das plantas'),
       ),
       body: ListView.builder(
         itemCount: plantData.length,
@@ -235,7 +237,24 @@ class PlantDetailsScreen extends StatelessWidget {
             title: Text(plantData[index]['nome']),
             subtitle: Text(plantData[index]['descricao']),
             trailing: plantData[index]['url'] != null
-                ? Image.network(plantData[index]['url'])
+                ? OutlinedButton(
+              onPressed: () async {
+                final url = plantData[index]['url'];
+                if (await canLaunch(url)) {
+                  await launch(
+                    url,
+                    forceSafariVC: false, // Para iOS
+                    forceWebView: false, // Para Android
+                    enableJavaScript: true,
+                    webOnlyWindowName: '_blank', // Abre em uma nova aba no navegador
+                  );
+                  print('Lançando $url');
+                } else {
+                  print('Não foi encontrado $url');
+                }
+              },
+              child: Text('url'),
+            )
                 : null,
           );
         },
@@ -243,3 +262,5 @@ class PlantDetailsScreen extends StatelessWidget {
     );
   }
 }
+
+
