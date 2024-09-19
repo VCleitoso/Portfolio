@@ -124,6 +124,9 @@ class _FirstScreenState extends State<FirstScreen> {
     }
   }
 
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,7 +185,138 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 }
-class SecondScreen extends StatelessWidget {
+
+class SecondScreen extends StatefulWidget {
+  const SecondScreen({super.key});
+
+  @override
+  _SecondScreenState createState() => _SecondScreenState();
+}
+class _SecondScreenState extends State<SecondScreen> {
+  String _result = '';
+  Future<void> _fetchArduinoData() async {
+    final url = Uri.parse('http://192.168.137.54/data'); // Altere para o IP do seu ESP32
+
+    try {
+      // Primeiro, obtenha a string do Arduino
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final dataString = response.body;
+        print('Data from Arduino: $dataString');
+
+        // Aqui você pode manipular a string, se necessário
+        final newUrl = Uri.parse('http://127.0.0.1:3000/$dataString');
+        print('New URL: $newUrl');
+
+        // Agora, faça a segunda requisição
+        final newResponse = await http.get(newUrl);
+
+        if (newResponse.statusCode == 200) {
+          final data = json.decode(newResponse.body) as List;
+          print('Data from local server: $data');
+
+          final plantData = data.map((item) => {
+            'nome': item['nome'],
+            'descricao': item['descricao'],
+            'url': item['url']
+          }).toList();
+
+          // Navegar para a tela de detalhes
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PlantDetailsScreen(plantData: plantData),
+            ),
+          );
+        } else {
+          setState(() {
+            _result = 'Failed to fetch data from second URL: ${newResponse.statusCode}';
+          });
+        }
+      } else {
+        setState(() {
+          _result = 'Failed to fetch data from Arduino: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _result = 'Error: $e';
+      });
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Input Automático'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/lib/WhyFarmingLogo.png',
+              height: 100,
+            ),
+            const SizedBox(height: 40),
+
+
+            ElevatedButton(
+              onPressed: _fetchArduinoData,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
+              child: const Text('Detectar sinal do ESP'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
+/*class SecondScreen extends StatelessWidget {
+
+  Future<void> _fetchArduinoData() async {
+    final url = Uri.parse('http://192.168.1.100/data'); // Altere para o IP do seu ESP32
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final dataString = response.body;
+
+      // Parsing da string retornada
+      final parameters = dataString.split('&').map((item) {
+        final parts = item.split('=');
+        return {parts[0]: parts[1]};
+      }).toList();
+
+      // Criar a lista de mapas com os dados
+      final List<Map<String, dynamic>> plantData = [
+        {
+          'n': parameters.firstWhere((item) => item.containsKey('n'))['n'],
+          'p': parameters.firstWhere((item) => item.containsKey('p'))['p'],
+          'k': parameters.firstWhere((item) => item.containsKey('k'))['k'],
+        }
+      ];
+
+      // Navegar para a tela de detalhes
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PlantDetailsScreen(plantData: plantData),
+        ),
+      );
+    } else {
+      setState(() {
+        _result = 'Failed to fetch data';
+      });
+    }
+  }
   const SecondScreen({super.key});
 
   @override
@@ -203,9 +337,7 @@ class SecondScreen extends StatelessWidget {
 
             // Botão "Detectar sinal do ESP"
             ElevatedButton(
-              onPressed: () {
-                // Adicione a lógica para detectar o sinal do ESP aqui
-              },
+              onPressed: _fetchArduinoData,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 textStyle: const TextStyle(fontSize: 16),
@@ -217,7 +349,7 @@ class SecondScreen extends StatelessWidget {
       ),
     );
   }
-}
+}*/
 class PlantDetailsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> plantData;
 
