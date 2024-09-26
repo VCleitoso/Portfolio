@@ -3,6 +3,7 @@ const cors = require('cors');  // Adicionando CORS
 const mysql = require('mysql2');
 const app = express();
 const port = 3000;
+//lightsail.aws
 
 // Habilitar CORS para permitir que o aplicativo Dart se conecte
 app.use(cors());

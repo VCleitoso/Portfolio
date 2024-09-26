@@ -13,6 +13,7 @@ VALUES ('Exemplo Planta', 15.50, 20.75, 10.00, 'Descrição breve da planta.', '
 
 INSERT INTO plantas (nome, N, P, K, descricao, url)
 VALUES 
+('Teste', 1.00, 1.00, 1.00, 'Somente um rick roll', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
 ('Rosa', 12.30, 18.50, 9.20, 'Planta ornamental com flores coloridas.', 'www.google.com'),
 ('Girassol', 14.00, 22.00, 11.50, 'Planta alta com flores grandes e amarelas.', 'caminho/para/documento.pdf'),
 ('Lavanda', 10.50, 15.75, 8.00, 'Planta aromática usada em óleos essenciais.', 'caminho/para/documento.pdf'),
