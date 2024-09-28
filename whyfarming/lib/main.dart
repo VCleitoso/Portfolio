@@ -195,7 +195,7 @@ class SecondScreen extends StatefulWidget {
 class _SecondScreenState extends State<SecondScreen> {
   String _result = '';
   Future<void> _fetchArduinoData() async {
-    final url = Uri.parse('http://192.168.137.218/data'); // Altere para o IP do seu ESP32
+    final url = Uri.parse('http://esp-julio.local/data'); // Altere para o IP do seu ESP32
 
     try {
       // Primeiro, obtenha a string do Arduino

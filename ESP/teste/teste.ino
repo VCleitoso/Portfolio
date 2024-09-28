@@ -1,24 +1,15 @@
 #include <WiFi.h>
 #include <WebServer.h>
+#include <ESPmDNS.h> // Inclua a biblioteca mDNS
 
 const char* ssid = "flavio-2G"; 
 const char* password = "2219280214"; 
-
-IPAddress local_IP(192, 168, 137, 218);
-IPAddress gateway(192, 168, 137, 1);
-IPAddress subnet(255, 255, 255, 0);
 
 WebServer server(80);
 
 void setup() {
     Serial.begin(9600);
-    delay(100); // Aguarde para garantir que o Serial esteja pronto
-
-    if (!WiFi.config(local_IP, gateway, subnet)) {
-        Serial.println("Falha ao configurar IP estático");
-    } else {
-        Serial.println("IP estático configurado");
-    }
+    delay(100);
 
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED) {
@@ -26,6 +17,10 @@ void setup() {
         Serial.println("Conectando ao Wi-Fi...");
     }
     Serial.println("Conectado ao Wi-Fi");
+
+    if (!MDNS.begin("esp-julio")) { // Inicie mDNS
+        Serial.println("Erro ao iniciar mDNS");
+    }
 
     server.on("/", handleRoot);
     server.on("/data", handleData);
