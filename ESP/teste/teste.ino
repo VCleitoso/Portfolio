@@ -2,8 +2,8 @@
 #include <WebServer.h>
 #include <ESPmDNS.h> // Inclua a biblioteca mDNS
 
-const char* ssid = "flavio-2G"; 
-const char* password = "2219280214"; 
+const char* ssid = "12345678"; 
+const char* password = "12345678"; 
 
 WebServer server(80);
 
@@ -18,17 +18,18 @@ void setup() {
     }
     Serial.println("Conectado ao Wi-Fi");
 
-    if (!MDNS.begin("esp-julio")) { // Inicie mDNS
+    if (!MDNS.begin("whyfarming")) { // Inicie mDNS (whyfarming.local)
         Serial.println("Erro ao iniciar mDNS");
     }
 
-    server.on("/", handleRoot);
+    //server.on("/", handleRoot);
     server.on("/data", handleData);
+    server.on("/", handleRedirect); 
     server.begin();
 }
 
 void loop() {
-    server.handleClient();
+    server.handleClient(); 
 }
 
 void handleRoot() {
@@ -40,4 +41,8 @@ void handleData() {
     server.sendHeader("Access-Control-Allow-Origin", "*"); 
     String valores_estaticos = "plants?n=1&p=1&k=1";
     server.send(200, "text/plain", valores_estaticos);
+}
+void handleRedirect() {
+    server.sendHeader("Location", "http://192.168.137.4:3030", true);
+    server.send(302, "text/plain", "Redirecionando...");
 }

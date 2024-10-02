@@ -101,7 +101,7 @@ class _FirstScreenState extends State<FirstScreen> {
     final p = _pController.text;
     final k = _kController.text;
 
-    final url = Uri.parse('http://127.0.0.1:3000/plants?n=$n&p=$p&k=$k');
+    final url = Uri.parse('http://192.168.137.4:3000/plants?n=$n&p=$p&k=$k');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -140,7 +140,7 @@ class _FirstScreenState extends State<FirstScreen> {
           children: [
             Center(
               child: Image.asset(
-                '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/lib/WhyFarmingLogo.png',
+                'assets/images/WhyFarmingLogo.png',
                 height: 100,
               ),
             ),
@@ -195,7 +195,7 @@ class SecondScreen extends StatefulWidget {
 class _SecondScreenState extends State<SecondScreen> {
   String _result = '';
   Future<void> _fetchArduinoData() async {
-    final url = Uri.parse('http://esp-julio.local/data'); // Altere para o IP do seu ESP32
+    final url = Uri.parse('http://whyfarming.local/data'); // Altere para o IP do seu ESP32
 
     try {
       // Primeiro, obtenha a string do Arduino
@@ -206,7 +206,7 @@ class _SecondScreenState extends State<SecondScreen> {
         print('Data from Arduino: $dataString');
 
         // Aqui você pode manipular a string, se necessário
-        final newUrl = Uri.parse('http://127.0.0.1:3000/$dataString');
+        final newUrl = Uri.parse('http://192.168.137.4:3000/$dataString');
         print('New URL: $newUrl');
 
         // Agora, faça a segunda requisição
@@ -257,7 +257,7 @@ class _SecondScreenState extends State<SecondScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              '/home/vandelsoncleitoso/Documentos/Faculdade/git/Portfolio/whyfarming/lib/WhyFarmingLogo.png',
+              'assets/images/WhyFarmingLogo.png',
               height: 100,
             ),
             const SizedBox(height: 40),
@@ -313,7 +313,7 @@ class PlantDetailsScreen extends StatelessWidget {
                   print('Não foi encontrado $url');
                 }
               },
-              child: Text('url'),
+              child: Text('Instruções'),
             )
                 : null,
           );
