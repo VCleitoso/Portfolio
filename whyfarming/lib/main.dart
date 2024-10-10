@@ -33,27 +33,9 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RichText(
-              text: const TextSpan(
-                children: [
-                  TextSpan(
-                    text: 'Why',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.yellow,
-                    ),
-                  ),
-                  TextSpan(
-                    text: 'Farming',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
+            Image.asset(
+              'assets/images/WhyFarmingLogo.png',
+              height: 100,
             ),
             const SizedBox(height: 50),
             ElevatedButton(
@@ -76,12 +58,12 @@ class HomeScreen extends StatelessWidget {
               child: const Text('Input automático'),
             ),
           ],
-
         ),
       ),
     );
   }
 }
+
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
