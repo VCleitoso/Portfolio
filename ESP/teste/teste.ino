@@ -22,9 +22,9 @@ void setup() {
         Serial.println("Erro ao iniciar mDNS");
     }
 
-    //server.on("/", handleRoot);
+    server.on("/", handleRoot);
     server.on("/data", handleData);
-    server.on("/", handleRedirect); 
+    server.on("/redirect", handleRedirect); 
     server.begin();
 }
 

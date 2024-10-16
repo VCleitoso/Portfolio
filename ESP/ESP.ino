@@ -1,126 +1,76 @@
 #include <WiFi.h>
 #include <WebServer.h>
-#include "SoftwareSerial.h"
-#include "Wire.h"
-#include "Adafruit_GFX.h"
-#include "Adafruit_SSD1306.h"
+#include <ESPmDNS.h>
 
-// Definições para o display OLED
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define OLED_RESET -1
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+const char* ssid = "12345678";
+const char* password = "12345678";
 
-// Definições para o módulo serial
-#define RE 8
-#define DE 7
+WebServer server(80); // Create a WebServer instance on port 80
+
+#define RE 34
+#define DE 32
 
 const byte nitro[] = {0x01, 0x03, 0x00, 0x1e, 0x00, 0x01, 0xe4, 0x0c};
 const byte phos[] = {0x01, 0x03, 0x00, 0x1f, 0x00, 0x01, 0xb5, 0xcc};
 const byte pota[] = {0x01, 0x03, 0x00, 0x20, 0x00, 0x01, 0x85, 0xc0};
 
 byte values[11];
-SoftwareSerial mod(2, 3);
 
-const char* ssid = "flavio-2G"; 
-const char* password = "2219280214"; 
-
-WebServer server(80); // Inicializa o servidor na porta 80
+HardwareSerial mod(1); // Use HardwareSerial instead of SoftwareSerial
 
 void setup() {
   Serial.begin(9600);
-  mod.begin(9600);
+  delay(100);
+  mod.begin(9600, SERIAL_8N1, 35, 33); // Configure Serial2 with RX and TX pins on D35 and D33
+  delay(100);
   pinMode(RE, OUTPUT);
   pinMode(DE, OUTPUT);
-
-  // Conectar ao Wi-Fi
+  Serial.println("Iniciando Wi-Fi...");
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  unsigned long startAttemptTime = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < 30000) {
     delay(1000);
     Serial.println("Conectando ao Wi-Fi...");
   }
-  Serial.println("Conectado ao Wi-Fi");
-
-  // Iniciar servidor
-  server.on("/", handleRoot);
-  server.on("/data", handleData);
-  server.begin();
-
-  // Inicializar OLED
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
-  delay(500);
-  display.clearDisplay();
-  display.setCursor(25, 15);
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.println(" NPK Sensor");
-  display.setCursor(25, 35);
-  display.setTextSize(1);
-  display.print("Initializing");
-  display.display();
-  delay(3000);
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("Conectado ao Wi-Fi");
+    if (!MDNS.begin("whyfarming")) {
+      Serial.println("Erro ao iniciar mDNS");
+    }
+    server.on("/", handleRoot);
+    server.on("/data", handleData);
+    server.on("/redirect", handleRedirect);
+    server.begin();
+  } else {
+    Serial.println("Falha ao conectar ao Wi-Fi");
+  }
 }
 
 void loop() {
-  Serial.print("\n Teste do monitor serial");
-  server.handleClient(); // Lidar com clientes HTTP
-
-  byte val1 = nitrogen();
-  delay(250);
-  byte val2 = phosphorous();
-  delay(250);
-  byte val3 = potassium();
-  delay(250);
-
-  // Exibir valores no Serial
-  Serial.print("Nitrogen: ");
-  Serial.print(val1);
-  Serial.println(" mg/kg");
-  Serial.print("Phosphorous: ");
-  Serial.print(val2);
-  Serial.println(" mg/kg");
-  Serial.print("Potassium: ");
-  Serial.print(val3);
-  Serial.println(" mg/kg");
-
-  // Atualizar display OLED
-  display.clearDisplay();
-  display.setTextSize(2);
-  display.setCursor(0, 5);
-  display.print("N: ");
-  display.print(val1);
-  display.setTextSize(1);
-  display.print(" mg/kg");
-  
-  display.setTextSize(2);
-  display.setCursor(0, 25);
-  display.print("P: ");
-  display.print(val2);
-  display.setTextSize(1);
-  display.print(" mg/kg");
-  
-  display.setTextSize(2);
-  display.setCursor(0, 45);
-  display.print("K: ");
-  display.print(val3);
-  display.setTextSize(1);
-  display.print(" mg/kg");
-  
-  display.display();
+  server.handleClient();
+  delay(200); // Small delay to prevent blocking
 }
 
 void handleRoot() {
-  server.send(200, "text/html", "<h1>Bem-vindo ao Sensor NPK</h1><p>Acesse <a href='/data'>/data</a> para ver os dados do sensor.</p>");
+  Serial.println("Acesso ao root detectado");
+  server.sendHeader("Access-Control-Allow-Origin", "*");
+  server.send(200, "text/html", "<h1>Bem-vindo ao Sensor NPK</h1><p>Acesse <a href='/data'>/data</a> para ver os dados do sensor <br> E <a href='/redirect'>/redirect</a> para acessar o app.</p>");
 }
 
 void handleData() {
   byte val1 = nitrogen();
   byte val2 = phosphorous();
   byte val3 = potassium();
-
   String valores = "plants?n=" + String(val1) + "&p=" + String(val2) + "&k=" + String(val3);
-  String valores_estaticos = "plants?n=1&p=1&k=1";
-  server.send(200, "text/plain", valores_estaticos);
+  server.send(200, "text/plain", valores);
+  Serial.print("Valores: ");
+  Serial.print(valores);
+}
+
+void handleRedirect() {
+  Serial.println("Redirecionando para a aplicação...");
+  server.sendHeader("Location", "http://192.168.137.4:3030", true);
+  server.send(302, "text/plain", "Redirecionando...");
 }
 
 byte nitrogen() {
@@ -130,9 +80,14 @@ byte nitrogen() {
   if (mod.write(nitro, sizeof(nitro)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
+    delay(100); // Small delay to ensure data is received
     for (byte i = 0; i < 7; i++) {
-      values[i] = mod.read();
+      if (mod.available()) {
+        values[i] = mod.read();
+        Serial.print(values[i], HEX);
+      }
     }
+    Serial.println();
   }
   return values[4];
 }
@@ -144,9 +99,14 @@ byte phosphorous() {
   if (mod.write(phos, sizeof(phos)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
+    delay(100); // Small delay to ensure data is received
     for (byte i = 0; i < 7; i++) {
-      values[i] = mod.read();
+      if (mod.available()) {
+        values[i] = mod.read();
+        Serial.print(values[i], HEX);
+      }
     }
+    Serial.println();
   }
   return values[4];
 }
@@ -158,9 +118,14 @@ byte potassium() {
   if (mod.write(pota, sizeof(pota)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
+    delay(100); // Small delay to ensure data is received
     for (byte i = 0; i < 7; i++) {
-      values[i] = mod.read();
+      if (mod.available()) {
+        values[i] = mod.read();
+        Serial.print(values[i], HEX);
+      }
     }
+    Serial.println();
   }
   return values[4];
 }
