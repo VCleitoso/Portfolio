@@ -11,5 +11,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      #- ./data/mysql:/var/lib/mysql
+      #retirada persistência de dados, é desnecessária edá problema, caso queira, apagar o '#' acima.
+      #toda vez que rodar irá repetir o script abaixo:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
