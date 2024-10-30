@@ -3,6 +3,16 @@
 
 Descrição do projeto WhyFarming
 
+# IMPORTANTE
+
+Ao dar deploy na aplicação, alterar o endereço de ip nos arquivos: 
+/whyfarming/lib/main.dart
+/Container/init.sql
+Alterar para endereço do servidor usado pra deploy.
+Para dar deploy na aplicação, executar deploy.py:
+
+python3 deploy.py
+
 
 # Capa
 
