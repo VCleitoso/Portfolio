@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 20px;
+    color: #59545e;
+}
+
+h1 {
+    color: #59545e;
+    text-align: center;
+}
+
+h2 {
+    color: #59545e;
+}
+
+p {
+    line-height: 1.6;
+}
+
+ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 200px; 
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+    font-size: 40px;
+    color: #302e33;
+}
