@@ -1,37 +1,30 @@
-import http.server
-import socketserver
 import subprocess
-import os
-import time
+import threading
+
+# Função para executar um comando em um shell
+def run_command(command):
+    process = subprocess.Popen(command, shell=True, executable='/bin/bash')
+    process.communicate()
 
 
-def run_commands():
- 
-    docker_process = subprocess.Popen(["docker-compose", "up"], cwd="Container")
-    node_process = subprocess.Popen(["node", "js/server.js"])
+# Comando 1: Entrar no diretório /Container e executar docker-compose up -d
+command1 = f"echo executar container && cd Container && docker-compose up -d"
 
-    return docker_process, node_process
+# Comando 2: Voltar para o diretório raiz e executar node js/server.js
+command2 = f"echo executar node && node js/server.js &"
 
-docker_process, node_process = run_commands()
+# Comando 3: Em paralelo, entrar no diretório whyfarming/build/web e executar http.server 3030
+command3 = f"echo abrir servidor && cd whyfarming/build/web && python3 -m http.server 3030"
 
-time.sleep(5)
+# Executar o comando 1 e esperar que ele termine
+run_command(command1)
 
-# Muda para o diretório correto
-os.chdir("whyfarming/build/web")
+# Depois de terminar o comando 1, executar os comandos 2 e 3 em paralelo
+thread2 = threading.Thread(target=run_command, args=(command2,))
+thread3 = threading.Thread(target=run_command, args=(command3,))
 
-# Verifica se o diretório existe
-if not os.path.exists("."):
-    print("Diretório não encontrado.")
-    exit(1)
+thread2.start()
+thread3.start()
 
-# Inicia o servidor HTTP
-PORT = 3030
-Handler = http.server.SimpleHTTPRequestHandler
-
-with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"Servidor HTTP rodando na porta {PORT}")
-    httpd.serve_forever()
-
-# Não esquecer de terminar os processos ao final
-docker_process.terminate()
-node_process.terminate()
+thread2.join()
+thread3.join()
