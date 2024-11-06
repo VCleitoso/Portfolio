@@ -8,10 +8,10 @@ def run_command(command):
 
 
 # Comando 1: Entrar no diretório /Container e executar docker-compose up -d
-command1 = f"echo executar container && cd Container && docker-compose up -d"
+command1 = f"echo executar container && cd Container && sudo docker-compose up -d"
 
 # Comando 2: Voltar para o diretório raiz e executar node js/server.js
-command2 = f"echo executar node && node js/server.js &"
+command2 = f"exit && echo executar node && node js/server.js &"
 
 # Comando 3: Em paralelo, entrar no diretório whyfarming/build/web e executar http.server 3030
 command3 = f"echo abrir servidor && cd whyfarming/build/web && python3 -m http.server 3030"

@@ -37,9 +37,10 @@ void setup() {
     if (!MDNS.begin("whyfarming")) {
       Serial.println("Erro ao iniciar mDNS");
     }
-    server.on("/", handleRoot);
+    //server.on("/", handleRoot);
     server.on("/data", handleData);
-    server.on("/redirect", handleRedirect);
+   // server.on("/redirect", handleRedirect);
+    server.on("/", handleRedirect);
     server.begin();
   } else {
     Serial.println("Falha ao conectar ao Wi-Fi");
@@ -58,10 +59,12 @@ void handleRoot() {
 }
 
 void handleData() {
+  server.sendHeader("Access-Control-Allow-Origin", "*"); 
   byte val1 = nitrogen();
   byte val2 = phosphorous();
   byte val3 = potassium();
   String valores = "plants?n=" + String(val1) + "&p=" + String(val2) + "&k=" + String(val3);
+  String valoresestaticos = "plants?n=12.30&p=18.50&k=9.20"; // 12.30, 18.50, 9.20,
   server.send(200, "text/plain", valores);
   Serial.print("Valores: ");
   Serial.print(valores);

@@ -14,5 +14,4 @@ INSERT INTO plantas (nome, N, P, K, descricao, url) VALUES
 ('Girassol', 14.00, 22.00, 11.50, 'Planta alta com flores grandes e amarelas.', 'http://192.168.137.4:3030/inst_cultivo/girassol.html'),
 ('Lavanda', 10.50, 15.75, 8.00, 'Planta aromática usada em óleos essenciais.', 'http://192.168.137.4:3030/inst_cultivo/lavanda.html'),
 ('Hortênsia', 13.20, 19.80, 10.40, 'Planta com flores grandes e variadas cores.', 'http://192.168.137.4:3030/inst_cultivo/hostensia.html'),
-('Alecrim', 11.00, 17.50, 9.00, 'Erva aromática usada na culinária.', 'http://192.168.137.4:3030/inst_cultivo/alecrim.html'),
-('Rick Roll', 1.00, 1.00, 1.00, 'Só um Rick Roll', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+('Alecrim', 11.00, 17.50, 9.00, 'Erva aromática usada na culinária.', 'http://192.168.137.4:3030/inst_cultivo/alecrim.html');
