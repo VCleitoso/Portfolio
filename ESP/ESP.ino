@@ -5,7 +5,7 @@
 const char* ssid = "12345678";
 const char* password = "12345678";
 
-WebServer server(80); // Create a WebServer instance on port 80
+WebServer server(80); 
 
 #define RE 34
 #define DE 32
@@ -16,12 +16,12 @@ const byte pota[] = {0x01, 0x03, 0x00, 0x20, 0x00, 0x01, 0x85, 0xc0};
 
 byte values[11];
 
-HardwareSerial mod(1); // Use HardwareSerial instead of SoftwareSerial
+HardwareSerial mod(1); 
 
 void setup() {
   Serial.begin(9600);
   delay(100);
-  mod.begin(9600, SERIAL_8N1, 35, 33); // Configure Serial2 with RX and TX pins on D35 and D33
+  mod.begin(9600, SERIAL_8N1, 35, 33); 
   delay(100);
   pinMode(RE, OUTPUT);
   pinMode(DE, OUTPUT);
@@ -37,10 +37,10 @@ void setup() {
     if (!MDNS.begin("whyfarming")) {
       Serial.println("Erro ao iniciar mDNS");
     }
-    //server.on("/", handleRoot);
+    server.on("/", handleRoot);
     server.on("/data", handleData);
-   // server.on("/redirect", handleRedirect);
-    server.on("/", handleRedirect);
+    server.on("/redirect", handleRedirect);
+  //  server.on("/", handleRedirect);
     server.begin();
   } else {
     Serial.println("Falha ao conectar ao Wi-Fi");
@@ -49,7 +49,7 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  delay(200); // Small delay to prevent blocking
+  delay(200); 
 }
 
 void handleRoot() {
@@ -83,7 +83,7 @@ byte nitrogen() {
   if (mod.write(nitro, sizeof(nitro)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
-    delay(100); // Small delay to ensure data is received
+    delay(100); 
     for (byte i = 0; i < 7; i++) {
       if (mod.available()) {
         values[i] = mod.read();
@@ -102,7 +102,7 @@ byte phosphorous() {
   if (mod.write(phos, sizeof(phos)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
-    delay(100); // Small delay to ensure data is received
+    delay(100); 
     for (byte i = 0; i < 7; i++) {
       if (mod.available()) {
         values[i] = mod.read();
@@ -121,7 +121,7 @@ byte potassium() {
   if (mod.write(pota, sizeof(pota)) == 8) {
     digitalWrite(DE, LOW);
     digitalWrite(RE, LOW);
-    delay(100); // Small delay to ensure data is received
+    delay(100); 
     for (byte i = 0; i < 7; i++) {
       if (mod.available()) {
         values[i] = mod.read();

@@ -9,14 +9,14 @@ Ao dar deploy na aplicação, alterar o endereço de ip nos arquivos:
 /whyfarming/lib/main.dart
 /Container/init.sql
 Alterar para endereço do servidor usado pra deploy.
-Para dar deploy na aplicação, executar deploy.py:
-python3 deploy.py
-Ou executar o deploy_linux
+Para dar deploy na aplicação:
+executar deploy_linux, se estiver no linux
+executar deploy_windows se estiver no windows
 
-É importante salientar que o deploy funciona no Linux, para executar deploy no windows, deve-se:
+Caso queira executar manualmente, basta:
 * Executar o docker-compose na pasta docker;
 * Em seguida, executar o server.js na pasta js;
-* nApós os passos anteriores entrar na pasta whyfarming/build/web e executar: python3 -m http.server 3030.
+* Após os passos anteriores entrar na pasta whyfarming/build/web e executar: python3 -m http.server 3030.
 
 # Capa
 
