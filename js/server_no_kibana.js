@@ -1,9 +1,9 @@
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors');  // Adicionando CORS
 const mysql = require('mysql2');
-const axios = require('axios'); // Usando axios para interagir com o Elasticsearch
 const app = express();
 const port = 3000;
+//lightsail.aws
 
 // Habilitar CORS para permitir que o aplicativo Dart se conecte
 app.use(cors());
@@ -25,31 +25,6 @@ db.connect((err) => {
     return;
   }
   console.log('Conectado ao banco de dados MySQL.');
-});
-
-// Configuração do Elasticsearch com axios
-const esClient = axios.create({
-  baseURL: 'http://localhost:9200',
-  timeout: 1000,
-});
-
-// Função para logar consultas SQL no Elasticsearch
-const logQuery = async (query) => {
-  await esClient.post('/sql_logs/_doc', {
-    timestamp: new Date(),
-    query: query.sql,
-    params: query.values,
-    duration: query.duration
-  });
-};
-
-// Middleware para logar consultas SQL
-db.on('enqueue', (query) => {
-  const start = Date.now();
-  query.on('end', () => {
-    query.duration = Date.now() - start;
-    logQuery(query);
-  });
 });
 
 // Endpoint para buscar plantas
