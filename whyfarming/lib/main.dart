@@ -83,7 +83,7 @@ class _FirstScreenState extends State<FirstScreen> {
     final p = _pController.text;
     final k = _kController.text;
 
-    final url = Uri.parse('http://192.168.137.4:3000/plants?n=$n&p=$p&k=$k');
+    final url = Uri.parse('http://inspiron.local:3000/plants?n=$n&p=$p&k=$k');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -188,7 +188,7 @@ class _SecondScreenState extends State<SecondScreen> {
         print('Data from Arduino: $dataString');
 
         // Aqui você pode manipular a string, se necessário
-        final newUrl = Uri.parse('http://192.168.137.4:3000/$dataString');
+        final newUrl = Uri.parse('http://inspiron.local:3000/$dataString');
         print('New URL: $newUrl');
 
         // Agora, faça a segunda requisição

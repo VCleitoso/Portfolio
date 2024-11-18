@@ -8,7 +8,7 @@ Descrição do projeto WhyFarming
 Ao dar deploy na aplicação, alterar o endereço de ip nos arquivos: 
 /whyfarming/lib/main.dart
 /Container/init.sql
-Alterar para endereço do servidor usado pra deploy.
+Inicialmente, eles estão com um endereço de mDNS, alterar para endereço do servidor usado pra deploy.
 Necessário executar npm install @elastic/elasticsearch para utilizar o elastic search no servidor, e npm install axios para realizar a comunicação.
 Se o monitoramento não for necessário, pode executar o server_no_kibana.js ao invés do server.js
 Para dar deploy na aplicação:

@@ -74644,7 +74644,7 @@ A.zr.prototype={
 tW(){var s=0,r=A.P(t.H),q=this,p,o,n
 var $async$tW=A.Q(function(a,b){if(a===1)return A.M(b,r)
 while(true)switch(s){case 0:s=2
-return A.T(A.akV(A.ee("http://192.168.137.4:3000/plants?n="+q.d.a.a+"&p="+q.e.a.a+"&k="+q.f.a.a,0,null)),$async$tW)
+return A.T(A.akV(A.ee("http://inspiron.local:3000/plants?n="+q.d.a.a+"&p="+q.e.a.a+"&k="+q.f.a.a,0,null)),$async$tW)
 case 2:n=b
 if(n.b===200){p=J.m3(t.j.a(B.c3.dP(A.akR(A.akx(n.e).c.a.h(0,"charset")).dP(n.w))),new A.abs(),t.a)
 o=A.a1(p,!0,p.$ti.i("aq.E"))
@@ -74680,7 +74680,7 @@ break
 case 7:g=n
 m=A.akR(A.akx(g.e).c.a.h(0,"charset")).dP(g.w)
 A.ka("Data from Arduino: "+A.j(m))
-l=A.ee("http://192.168.137.4:3000/"+A.j(m),0,null)
+l=A.ee("http://inspiron.local:3000/"+A.j(m),0,null)
 A.ka("New URL: "+A.j(l))
 s=10
 return A.T(A.akV(l),$async$py)

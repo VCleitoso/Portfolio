@@ -72,7 +72,7 @@ void handleData() {
 
 void handleRedirect() {
   Serial.println("Redirecionando para a aplicação...");
-  server.sendHeader("Location", "http://192.168.137.4:3030", true);
+  server.sendHeader("Location", "http://inspiron.local:3030", true);
   server.send(302, "text/plain", "Redirecionando...");
 }
 
