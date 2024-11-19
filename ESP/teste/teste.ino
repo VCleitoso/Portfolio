@@ -2,9 +2,8 @@
 #include <WebServer.h>
 #include <ESPmDNS.h> // Inclua a biblioteca mDNS
 
-const char* ssid = "12345678"; 
-const char* password = "12345678"; 
-
+const char* ssid = "12345678";
+const char* password = "12345678";
 WebServer server(80);
 
 void setup() {
