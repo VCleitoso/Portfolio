@@ -1,13 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
-const axios = require('axios'); // Usando axios para interagir com o Elasticsearch
 const app = express();
 const port = 3000;
 
 // Habilitar CORS para permitir que o aplicativo Dart se conecte
 app.use(cors());
-
 app.use(express.json());
 
 // Configuração do banco de dados
@@ -27,37 +25,38 @@ db.connect((err) => {
   console.log('Conectado ao banco de dados MySQL.');
 });
 
-// Configuração do Elasticsearch com axios
-const esClient = axios.create({
-  baseURL: 'http://localhost:9200',
-  timeout: 1000,
-});
-
-// Função para logar consultas SQL no Elasticsearch
-const logQuery = async (query) => {
-  await esClient.post('/sql_logs/_doc', {
-    timestamp: new Date(),
-    query: query.sql,
-    params: query.values,
-    duration: query.duration
+// Função para registrar log no banco de dados
+const logRequest = (endpoint, n, p, k, ip) => {
+  const sql = 'INSERT INTO logs (endpoint, n, p, k, ip) VALUES (?, ?, ?, ?, ?)';
+  db.query(sql, [endpoint, n, p, k, ip], (error) => {
+    if (error) {
+      console.error('Erro ao registrar log:', error);
+    } else {
+      console.log('Log registrado com sucesso.');
+    }
   });
 };
-
-// Middleware para logar consultas SQL
-db.on('enqueue', (query) => {
-  const start = Date.now();
-  query.on('end', () => {
-    query.duration = Date.now() - start;
-    logQuery(query);
-  });
-});
 
 // Endpoint para buscar plantas
 app.get('/plants', (req, res) => {
   const { n, p, k } = req.query;
+  const ip = req.ip;  // Captura o IP da requisição
+
+  // Registrar log da requisição com o IP
+  logRequest('/plants', n, p, k, ip);
+
   const sql = 'SELECT nome, descricao, url FROM plantas WHERE N <= ? AND P <= ? AND K <= ?';
   
   db.query(sql, [n, p, k], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(results);
+  });
+});
+app.get('/logs', (req, res) => {
+  const sql = 'SELECT * FROM logs ORDER BY timestamp DESC LIMIT 50'; // Limite de 50 logs para exibir
+  db.query(sql, (error, results) => {
     if (error) {
       return res.status(500).json({ error: error.message });
     }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -57,6 +56,16 @@ class HomeScreen extends StatelessWidget {
               },
               child: const Text('Input automático'),
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LogsScreen()),
+                );
+              },
+              child: const Text('Visualizar logs'),
+            ),
           ],
         ),
       ),
@@ -64,7 +73,7 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-
+// Tela de Input Manual
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
 
@@ -106,9 +115,6 @@ class _FirstScreenState extends State<FirstScreen> {
     }
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -127,7 +133,6 @@ class _FirstScreenState extends State<FirstScreen> {
               ),
             ),
             const SizedBox(height: 30),
-
             TextField(
               controller: _nController,
               keyboardType: TextInputType.number,
@@ -168,14 +173,17 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 }
 
+// Tela de Input Automático
 class SecondScreen extends StatefulWidget {
   const SecondScreen({super.key});
 
   @override
   _SecondScreenState createState() => _SecondScreenState();
 }
+
 class _SecondScreenState extends State<SecondScreen> {
   String _result = '';
+
   Future<void> _fetchArduinoData() async {
     final url = Uri.parse('http://whyfarming.local/data'); // Altere para o IP do seu ESP32
 
@@ -227,7 +235,6 @@ class _SecondScreenState extends State<SecondScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -243,8 +250,6 @@ class _SecondScreenState extends State<SecondScreen> {
               height: 100,
             ),
             const SizedBox(height: 40),
-
-
             ElevatedButton(
               onPressed: _fetchArduinoData,
               style: ElevatedButton.styleFrom(
@@ -253,18 +258,83 @@ class _SecondScreenState extends State<SecondScreen> {
               ),
               child: const Text('Detectar sinal do ESP'),
             ),
+            const SizedBox(height: 20),
+            Text(_result),
           ],
         ),
       ),
     );
   }
 }
+// Tela de Logs
+class LogsScreen extends StatefulWidget {
+  const LogsScreen({super.key});
 
+  @override
+  _LogsScreenState createState() => _LogsScreenState();
+}
+
+class _LogsScreenState extends State<LogsScreen> {
+  // Lista para armazenar os logs recebidos da API
+  List<dynamic> logs = [];
+
+  // Função para buscar os logs do servidor
+  Future<void> fetchLogs() async {
+    final url = Uri.parse('http://localhost:3000/logs');  // Altere para o URL do seu servidor
+
+    try {
+      // Enviar a requisição GET
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        // Se a resposta for bem-sucedida, converta o corpo da resposta para JSON
+        setState(() {
+          logs = json.decode(response.body);
+        });
+      } else {
+        // Caso a requisição falhe, exibe uma mensagem de erro
+        throw Exception('Falha ao carregar os logs');
+      }
+    } catch (e) {
+      // Em caso de erro ao fazer a requisição
+      print('Erro ao carregar os logs: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLogs();  // Chama a função para carregar os logs ao inicializar a tela
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Logs'),
+      ),
+      body: logs.isEmpty
+          ? const Center(child: CircularProgressIndicator())  // Exibe um indicador de carregamento enquanto os logs não são carregados
+          : ListView.builder(
+        itemCount: logs.length,
+        itemBuilder: (context, index) {
+          // Formatação do log (ajuste conforme os campos que você usa no seu banco)
+          final log = logs[index];
+          return ListTile(
+            title: Text('Log ${log['id']} - ${log['endpoint']}'),  // Exibe o id e o endpoint como exemplo
+            subtitle: Text('IP: ${log['ip']} - Data: ${log['timestamp']}'), // Exibe o IP e a data
+          );
+        },
+      ),
+    );
+  }
+}
+
+// Tela de Detalhes das Plantas
 class PlantDetailsScreen extends StatelessWidget {
   final List<Map<String, dynamic>> plantData;
 
-  const PlantDetailsScreen({Key? key, required this.plantData})
-      : super(key: key);
+  const PlantDetailsScreen({Key? key, required this.plantData}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -285,12 +355,11 @@ class PlantDetailsScreen extends StatelessWidget {
                 if (await canLaunch(url)) {
                   await launch(
                     url,
-                    forceSafariVC: false, // Para iOS
-                    forceWebView: false, // Para Android
+                    forceSafariVC: false,
+                    forceWebView: false,
                     enableJavaScript: true,
-                    webOnlyWindowName: '_blank', // Abre em uma nova aba no navegador
+                    webOnlyWindowName: '_blank',
                   );
-                  print('Lançando $url');
                 } else {
                   print('Não foi encontrado $url');
                 }
@@ -304,5 +373,3 @@ class PlantDetailsScreen extends StatelessWidget {
     );
   }
 }
-
-

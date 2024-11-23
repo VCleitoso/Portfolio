@@ -15,3 +15,13 @@ INSERT INTO plantas (nome, N, P, K, descricao, url) VALUES
 ('Lavanda', 10.50, 15.75, 8.00, 'Planta aromática usada em óleos essenciais.', 'http://inspiron.local:3030/inst_cultivo/lavanda.html'),
 ('Hortênsia', 13.20, 19.80, 10.40, 'Planta com flores grandes e variadas cores.', 'http://inspiron.local:3030/inst_cultivo/hostensia.html'),
 ('Alecrim', 11.00, 17.50, 9.00, 'Erva aromática usada na culinária.', 'http://inspiron.local:3030/inst_cultivo/alecrim.html');
+
+CREATE TABLE IF NOT EXISTS logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  endpoint VARCHAR(255) NOT NULL,
+  n INT,
+  p INT,
+  k INT,
+  ip VARCHAR(255), 
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
