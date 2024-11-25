@@ -2,8 +2,8 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 
-const char* ssid = "12345678";
-const char* password = "12345678";
+const char* ssid = "flavio-2G";
+const char* password = "2219280214";
 
 WebServer server(80); 
 

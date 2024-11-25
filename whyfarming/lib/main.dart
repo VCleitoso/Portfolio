@@ -267,6 +267,7 @@ class _SecondScreenState extends State<SecondScreen> {
   }
 }
 // Tela de Logs
+// Tela de Logs
 class LogsScreen extends StatefulWidget {
   const LogsScreen({super.key});
 
@@ -329,6 +330,7 @@ class _LogsScreenState extends State<LogsScreen> {
     );
   }
 }
+
 
 // Tela de Detalhes das Plantas
 class PlantDetailsScreen extends StatelessWidget {
