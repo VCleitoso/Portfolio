@@ -67,9 +67,9 @@ O tema do projeto é um desenvolvimento de uma ferramenta de análise de solo co
 
 ## Diagrama de caso de uso
 
-![Diagrama de Caso de Uso](caminho/para/o/diagrama-caso-uso.png)
+![Diagrama de Caso de Uso](diagrama-caso-uso.png)
 
 ## Diagrama de arquitetura
 
-![Diagrama de Arquitetura](caminho/para/o/diagrama-arquitetura.png)
+![Diagrama de Arquitetura](diagrama-arquitetura.png)
 
