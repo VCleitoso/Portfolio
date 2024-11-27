@@ -1,4 +1,3 @@
-(documento em edição)
 # Portfolio
 
 Descrição do projeto WhyFarming
@@ -63,3 +62,14 @@ O tema do projeto é um desenvolvimento de uma ferramenta de análise de solo co
 
 1·	É necessária conexão com a internet.
 2·	É necessário o produto de hardware.
+
+# Diagramas
+
+## Diagrama de caso de uso
+
+![Diagrama de Caso de Uso](caminho/para/o/diagrama-caso-uso.png)
+
+## Diagrama de arquitetura
+
+![Diagrama de Arquitetura](caminho/para/o/diagrama-arquitetura.png)
+
