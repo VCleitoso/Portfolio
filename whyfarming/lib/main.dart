@@ -281,7 +281,7 @@ class _LogsScreenState extends State<LogsScreen> {
 
   // Função para buscar os logs do servidor
   Future<void> fetchLogs() async {
-    final url = Uri.parse('http://localhost:3000/logs');  // Altere para o URL do seu servidor
+    final url = Uri.parse('http://inspiron.local:3000/logs');  // Altere para o URL do seu servidor
 
     try {
       // Enviar a requisição GET

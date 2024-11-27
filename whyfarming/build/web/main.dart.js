@@ -74912,7 +74912,7 @@ aj(){return new A.MA([])}}
 A.MA.prototype={
 w2(){var s=0,r=A.P(t.H),q=1,p,o=this,n,m,l,k,j,i
 var $async$w2=A.Q(function(a,b){if(a===1){p=b
-s=q}while(true)switch(s){case 0:j=A.dW("http://localhost:3000/logs",0,null)
+s=q}while(true)switch(s){case 0:j=A.dW("http://inspiron.local:3000/logs",0,null)
 q=3
 s=6
 return A.T(A.ahV(j),$async$w2)
