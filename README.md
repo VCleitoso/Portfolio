@@ -65,9 +65,17 @@ O tema do projeto é um desenvolvimento de uma ferramenta de análise de solo co
 
 # Diagramas
 
-## Diagrama de caso de uso
+## Diagrama de caso de uso: Input manual
 
-![Diagrama de Caso de Uso](diagrama-caso-uso.png)
+![Diagrama de Caso de Uso Manual](diagrama-caso-uso-manual.png)
+
+## Diagrama de caso de uso: Input automático
+
+![Diagrama de Caso de Uso Automático](diagrama-caso-uso-aut.png)
+
+## Diagrama de caso de uso: Leitura de logs
+
+![Diagrama de Caso de Uso Logs](Caso_uso_logs.drawio.png)
 
 ## Diagrama de arquitetura
 

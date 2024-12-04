@@ -2,29 +2,34 @@
 #include <WebServer.h>
 #include <ESPmDNS.h>
 
-const char* ssid = "flavio-2G";
-const char* password = "2219280214";
+const char* ssid = "WickedBotz";
+const char* password = "wickedbotz";
 
 WebServer server(80); 
 
-#define RE 34
-#define DE 32
+// Pinos de controle e comunicação RS485
+#define RE 34  // Recepção/Transmissão (controle de direção)
+#define DE 32  // Recepção/Transmissão (controle de direção)
+#define DI 35  // TX para o sensor RS485
+#define RO 33  // RX do sensor RS485 para o ESP32
 
+// Comandos para o sensor
 const byte nitro[] = {0x01, 0x03, 0x00, 0x1e, 0x00, 0x01, 0xb5, 0xcc};
 const byte phos[] = {0x01, 0x03, 0x00, 0x1f, 0x00, 0x01, 0xe4, 0x0c};
 const byte pota[] = {0x01, 0x03, 0x00, 0x20, 0x00, 0x01, 0x85, 0xc0};
-
+byte val1, val2, val3;
 byte values[11];
-
-HardwareSerial mod(1); 
+HardwareSerial mod(1);  // Usando a serial 1 para comunicação RS485
 
 void setup() {
   Serial.begin(9600);
   delay(100);
-  mod.begin(9600, SERIAL_8N1, 35, 33); 
+  mod.begin(9600, SERIAL_8N1, DI, RO);  // Iniciando a comunicação serial RS485 com pinos DI e RO
   delay(100);
+  
   pinMode(RE, OUTPUT);
   pinMode(DE, OUTPUT);
+
   Serial.println("Iniciando Wi-Fi...");
   WiFi.begin(ssid, password);
   unsigned long startAttemptTime = millis();
@@ -40,7 +45,6 @@ void setup() {
     server.on("/", handleRoot);
     server.on("/data", handleData);
     server.on("/redirect", handleRedirect);
-  //  server.on("/", handleRedirect);
     server.begin();
   } else {
     Serial.println("Falha ao conectar ao Wi-Fi");
@@ -48,6 +52,9 @@ void setup() {
 }
 
 void loop() {
+  val1 = nitrogen();
+  val2 = phosphorous();
+  val3 = potassium();
   server.handleClient();
   delay(200); // Leia os sensores a cada 5 segundos
 }
@@ -60,11 +67,7 @@ void handleRoot() {
 
 void handleData() {
   server.sendHeader("Access-Control-Allow-Origin", "*"); 
-  byte val1 = nitrogen();
-  byte val2 = phosphorous();
-  byte val3 = potassium();
   String valores = "plants?n=" + String(val1) + "&p=" + String(val2) + "&k=" + String(val3);
-  String valoresestaticos = "plants?n=12.30&p=18.50&k=9.20"; // 12.30, 18.50, 9.20,
   server.send(200, "text/plain", valores);
   Serial.print("Valores: ");
   Serial.print(valores);
@@ -76,59 +79,68 @@ void handleRedirect() {
   server.send(302, "text/plain", "Redirecionando...");
 }
 
+// Função para ler o nitrogênio
 byte nitrogen() {
-  digitalWrite(DE, HIGH);
-  digitalWrite(RE, HIGH);
+  digitalWrite(DE, HIGH);  // Ativar modo de transmissão
+  digitalWrite(RE, HIGH);  // Ativar modo de transmissão
   delay(10);
-  if (mod.write(nitro, sizeof(nitro)) == 8) {
-    digitalWrite(DE, LOW);
-    digitalWrite(RE, LOW);
-    delay(100); 
-    for (byte i = 0; i < 7; i++) {
-      if (mod.available()) {
-        values[i] = mod.read();
-        Serial.print(values[i], HEX);
+
+  if (mod.write(nitro, sizeof(nitro)) == 8) {  // Envia o comando para o sensor
+    digitalWrite(DE, LOW);  // Ativar modo de recepção
+    digitalWrite(RE, LOW);  // Ativar modo de recepção
+    delay(100);     
+
+    if (mod.available() > 0) {  // Verifica se há dados disponíveis
+      for (byte i = 0; i < 7; i++) {
+        if (mod.available()) {
+          values[i] = mod.read();  // Lê os dados recebidos
+        }
       }
     }
-    Serial.println();
   }
-  return values[4];
+  return values[4];   // Retorna o valor de nitrogênio
 }
 
+// Função para ler o fósforo
 byte phosphorous() {
-  digitalWrite(DE, HIGH);
-  digitalWrite(RE, HIGH);
+  digitalWrite(DE, HIGH);  // Ativar modo de transmissão
+  digitalWrite(RE, HIGH);  // Ativar modo de transmissão
   delay(10);
-  if (mod.write(phos, sizeof(phos)) == 8) {
-    digitalWrite(DE, LOW);
-    digitalWrite(RE, LOW);
-    delay(100); 
-    for (byte i = 0; i < 7; i++) {
-      if (mod.available()) {
-        values[i] = mod.read();
-        Serial.print(values[i], HEX);
+
+  if (mod.write(phos, sizeof(phos)) == 8) {  // Envia o comando para o sensor
+    digitalWrite(DE, LOW);  // Ativar modo de recepção
+    digitalWrite(RE, LOW);  // Ativar modo de recepção
+    delay(100);     
+
+    if (mod.available() > 0) {  // Verifica se há dados disponíveis
+      for (byte i = 0; i < 7; i++) {
+        if (mod.available()) {
+          values[i] = mod.read();  // Lê os dados recebidos
+        }
       }
     }
-    Serial.println();
   }
-  return values[4];
+  return values[4];  // Retorna o valor de fósforo
 }
 
+// Função para ler o potássio
 byte potassium() {
-  digitalWrite(DE, HIGH);
-  digitalWrite(RE, HIGH);
+  digitalWrite(DE, HIGH);  // Ativar modo de transmissão
+  digitalWrite(RE, HIGH);  // Ativar modo de transmissão
   delay(10);
-  if (mod.write(pota, sizeof(pota)) == 8) {
-    digitalWrite(DE, LOW);
-    digitalWrite(RE, LOW);
-    delay(100); 
-    for (byte i = 0; i < 7; i++) {
-      if (mod.available()) {
-        values[i] = mod.read();
-        Serial.print(values[i], HEX);
+
+  if (mod.write(pota, sizeof(pota)) == 8) {  // Envia o comando para o sensor
+    digitalWrite(DE, LOW);  // Ativar modo de recepção
+    digitalWrite(RE, LOW);  // Ativar modo de recepção
+    delay(100);     
+
+    if (mod.available() > 0) {  // Verifica se há dados disponíveis
+      for (byte i = 0; i < 7; i++) {
+        if (mod.available()) {
+          values[i] = mod.read();  // Lê os dados recebidos
+        }
       }
     }
-    Serial.println();
   }
-  return values[4];
+  return values[4];  // Retorna o valor de potássio
 }
