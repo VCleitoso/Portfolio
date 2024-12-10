@@ -53,9 +53,10 @@ O tema do projeto é um desenvolvimento de uma ferramenta de análise de solo co
 1·	O sistema deve ser capaz de ler e interpetar as informações do solo fornecidos pelo usuário.
 2·	O sistema deve ter um banco de dados de plantas que inclua informações sobre as condições ideais de cultivo, como clima, solo e exposição solar.
 3·	O sistema deve recomendar uma lista de plantas adequadas para o cultivo na região específica do usuário, com base na qualidade do solo.
-4·	Para cada planta recomendada, o sistema deve fornecer informações detalhadas, como instruções de cultivo, cuidados específicos, época de plantio e colheita, e possíveis pragas ou doenças.
+4.  O sistema deve possuir uma forma de monitoramento.
+5·	Para cada planta recomendada, o sistema deve fornecer informações detalhadas, como instruções de cultivo, cuidados específicos, época de plantio e colheita, e possíveis pragas ou doenças.
  Uma abstração do funcionamento do sistema poder ser observado nas Figuras 
-5·	O sistema deve ter uma interface de usuário amigável e intuitiva que permita aos usuários navegar facilmente pelas recomendações de plantas e acessar informações detalhadas.
+6·	O sistema deve ter uma interface de usuário amigável e intuitiva que permita aos usuários navegar facilmente pelas recomendações de plantas e acessar informações detalhadas.
 
  
 **Requisitos não funcionais**
